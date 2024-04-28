@@ -4,5 +4,5 @@ n for Texas Tech University’s students. The application records the daily groc
 
 
 #Ynes Ineza Prompts:
-https://chat.openai.com/share/224b9d5f-0d09-4dce-8a54-7e8f11e9f2fd
-https://chat.openai.com/share/998c86fd-252b-4d91-8cd9-ef7b35e299e2
+-https://chat.openai.com/share/224b9d5f-0d09-4dce-8a54-7e8f11e9f2fd
+-https://chat.openai.com/share/998c86fd-252b-4d91-8cd9-ef7b35e299e2
