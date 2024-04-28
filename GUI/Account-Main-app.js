@@ -1,8 +1,9 @@
 // Simulated Database
-        let users = [{ userId: 1, username: "user", password: "pass" }];
+        // Simulated Database
+let users = [{ userId: 1, username: "user", password: "pass" }];
         let items = [
-            { itemId: 1, itemName: "Milk", price: 1.99 },
-            { itemId: 2, itemName: "Bread", price: 2.50 }
+            { itemId: "Milk", itemName: "Milk", price: 5.00 },
+            { itemId: "Bread", itemName: "Bread", price: 2.50 }
         ];
         let purchases = [];
 
@@ -19,22 +20,14 @@
             }
         }
 
-        // GroceryItem class
-        class GroceryItem {
-            constructor(itemId, itemName, price) {
-                this.itemId = itemId;
-                this.itemName = itemName;
-                this.price = price;
-            }
-        }
-
-        // Purchase class
-        class Purchase {
-            constructor(purchaseId, date, item, price) {
-                this.purchaseId = purchaseId;
-                this.date = new Date(date);
-                this.item = item;
-                this.price = price;
+        // Check if user is already logged in using local storage
+        function checkLoggedIn() {
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            if (storedUser) {
+                alert(`Welcome back, ${storedUser.username}!`);
+                document.getElementById('username').value = storedUser.username;
+                document.getElementById('password').value = storedUser.password;
+                login();
             }
         }
 
@@ -44,6 +37,8 @@
             const password = document.getElementById('password').value;
             let user = users.find(u => u.username === username && u.password === password);
             if (user) {
+                // Store user's login status in local storage
+                localStorage.setItem('user', JSON.stringify(user));
                 alert('Login successful');
             } else {
                 const createNewAccount = confirm('Login failed. Do you want to create a new account?');
@@ -53,6 +48,7 @@
                     if (newUsername && newPassword) {
                         const newUser = new User(users.length + 1, newUsername, newPassword);
                         users.push(newUser);
+                        localStorage.setItem('user', JSON.stringify(newUser));
                         alert('Account created successfully. You can now login with your new credentials.');
                     } else {
                         alert('Invalid username or password. Please try again.');
@@ -68,7 +64,7 @@
             const item = items.find(i => i.itemId === itemId);
             if (item) {
                 const purchaseId = purchases.length + 1;
-                purchases.push(new Purchase(purchaseId, date, item, price));
+                purchases.push({ purchaseId, date, item, price });
                 alert('Purchase recorded');
             } else {
                 alert('Item not found');
@@ -79,7 +75,8 @@
             const month = parseInt(document.getElementById('month').value);
             const year = parseInt(document.getElementById('year').value);
             const total = purchases.reduce((acc, purchase) => {
-                if (purchase.date.getMonth() + 1 === month && purchase.date.getFullYear() === year) {
+                const purchaseDate = new Date(purchase.date);
+                if (purchaseDate.getMonth() + 1 === month && purchaseDate.getFullYear() === year) {
                     return acc + purchase.price;
                 }
                 return acc;
