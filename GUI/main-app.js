@@ -1,101 +1,54 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Expense info form
-    const expenseInfoForm = document.getElementById('expense-info-form');
-    expenseInfoForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission behavior
+document.getElementById('grocery-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevents the form from submitting in the traditional way
 
-        // Get values from the form
-        const name = document.getElementById('name').value;
-        const month = document.getElementById('month').value;
-        const year = document.getElementById('year').value;
+    const name = document.getElementById('name').value.trim();
+    const item = document.getElementById('item').value.trim();
+    const price = parseFloat(document.getElementById('price').value);
 
-        // Save expense information to CSV file
-        saveExpenseInfoToCSV(name, month, year);
-
-        // Clear the form fields after submission
-        expenseInfoForm.reset();
-    });
-
-    // Grocery expense form
-    const groceryForm = document.getElementById('grocery-form');
-    groceryForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission behavior
-
-        // Get values from the form
-        const item = document.getElementById('item').value;
-        const price = parseFloat(document.getElementById('price').value);
-
-        // Add the new expense to the expenses list
-        addExpense(item, price);
-
-        // Clear the form fields after submission
-        groceryForm.reset();
-    });
-
-    // Function to save expense information to CSV file
-    function saveExpenseInfoToCSV(name, month, year) {
-        const csvData = `${name},${month},${year}\n`;
-
-        // Convert CSV data to a Blob object
-        const blob = new Blob([csvData], { type: 'text/csv' });
-
-        // Create a new File object with the Blob data
-        const file = new File([blob], 'expenses.csv', { type: 'text/csv' });
-
-        // Create a new FileReader object
-        const reader = new FileReader();
-
-        // Define the function to be executed after reading the file
-        reader.onload = function(event) {
-            // Append the new data to the existing file data
-            const updatedCSV = event.target.result + csvData;
-
-            // Save the updated data to the existing file
-            saveToFile(updatedCSV);
-        };
-
-        // Read the existing file data as text
-        reader.readAsText(file);
+    if (!name || !item || isNaN(price)) {
+        alert('Please fill in all fields correctly.');
+        return;
     }
 
-    // Function to save data to a file
-    function saveToFile(data) {
-        // Create a new Blob object with the updated data
-        const blob = new Blob([data], { type: 'text/csv' });
+    // Add item to the list in the UI
+    const expensesList = document.getElementById('expenses');
+    const newItem = document.createElement('li');
+    newItem.textContent = `${item}: $${price.toFixed(2)}`;
+    expensesList.appendChild(newItem);
 
-        // Create a new URL for the Blob object
-        const url = URL.createObjectURL(blob);
+    // Update the total displayed
+    updateTotal(price);
 
-        // Create a new link element
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'expenses.csv';
+    // Prepare data to send to the server
+    const data = { name, expense: price };
 
-        // Append the link to the document body and trigger the download
-        document.body.appendChild(link);
-        link.click();
+    // POST request to add expenses
+    fetch('/add_expenses', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 
-        // Clean up
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
+    // Clear the item and price inputs after adding
+    document.getElementById('item').value = '';
+    document.getElementById('price').value = '';
+});
 
-    // Function to add a new expense
-    function addExpense(item, price) {
-        // Create a new list item to display the expense
-        const listItem = document.createElement('li');
-        listItem.textContent = `${item}: $${price.toFixed(2)}`;
-
-        // Add the new expense to the expenses list
-        const expensesList = document.getElementById('expenses');
-        expensesList.appendChild(listItem);
-
-        // Calculate total expense
-        let totalExpense = 0;
-        expensesList.querySelectorAll('li').forEach(function (expense) {
-            const expenseAmount = parseFloat(expense.textContent.split(': $')[1]);
-            totalExpense += expenseAmount;
-        });
+function updateTotal(amount) {
+    const totalExpenseText = document.getElementById('total-expense');
+    let currentTotal = parseFloat(totalExpenseText.textContent.replace(/[^0-9.-]+/g, ""));
+    currentTotal += amount;
+    totalExpenseText.textContent = `Total Monthly Expense: $${currentTotal.toFixed(2)}`;
+}
 
         // Update total expense display
         document.getElementById('total-expense').textContent = `Total Monthly Expense: $${totalExpense.toFixed(2)}`;
