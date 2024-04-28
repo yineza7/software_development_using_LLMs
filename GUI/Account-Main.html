@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grocery Expense Tracker</title>
+</head>
+<body>
+<h1>Grocery Expense Tracker</h1>
+<div>
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+<div>
+    <h2>Record Purchase</h2>
+    <input type="text" id="item_id" placeholder="Item ID">
+    <input type="text" id="price" placeholder="Price">
+    <input type="date" id="date">
+    <button onclick="recordPurchase()">Record Purchase</button>
+</div>
+<div>
+    <h2>Get Monthly Expenses</h2>
+    <input type="number" id="month" placeholder="Month (1-12)">
+    <input type="number" id="year" placeholder="Year">
+    <button onclick="getMonthlyExpenses()">Get Expenses</button>
+    <p id="expensesResult"></p>
+    <script src="main-app.js"></script>
+</div>
+</body>
+</html>
