@@ -69,11 +69,16 @@ function updateMonthlyReport() {
     reportDiv.innerHTML = '';
     let totalExpenses = 0;
 
-    for (const [month, items] of Object.entries(monthlyGroceries)) {
-        const monthName = new Date(month).toLocaleString('en-us', { month: 'long', year: 'numeric' });
+    // Mapping of month number to month name
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+    for (const [month, items] of Object.entries(monthlyGroceries)) {
+        // Extract year and month from the month key
+        const [year, monthNumber] = month.split('-');
+        const monthName = monthNames[parseInt(monthNumber) - 1]; // Subtract 1 to get correct index
+        
         const header = document.createElement('h3');
-        header.textContent = `Grocery Expenses for the month of "${monthName}":`;
+        header.textContent = `Grocery Expenses for the month of "${monthName} ${year}":`;
         reportDiv.appendChild(header);
 
         for (const [item, price] of Object.entries(items)) {
