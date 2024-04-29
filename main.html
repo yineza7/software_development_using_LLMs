@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Expenses Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Grocery Expenses Tracker</h1>
+    <form id="expenseForm">
+        <label for="item">Item:</label>
+        <input type="text" id="item" required><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" step="0.01" required><br>
+        <label for="date">Date:</label>
+        <input type="date" id="date" required><br>
+        <button type="submit">Add Expense</button>
+    </form>
+
+    <h2>Daily Report</h2>
+    <div id="dailyReportContent"></div>
+
+    <h2>Monthly Report</h2>
+    <div id="monthlyReportContent"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
